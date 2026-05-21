@@ -1,4 +1,4 @@
-FROM maven:3.9-eclipse-temurin:17 AS buil
+FROM maven:3.9-eclipse-temurin-17 AS buil
 
 WORKDIR /app
 
