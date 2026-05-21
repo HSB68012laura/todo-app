@@ -19,10 +19,12 @@ public class TodoRestClient {
     @Value("${todo.rest.url:https://todo-rest-production-0496.up.railway.app}")
     private String apiBaseUrl;
 
-    public List<TaskResponseDto> getTasks(String username, String password) {
-        // Logs para depuración (se verán en los logs de Railway)
+    // 👇 Este método ya no recibe parámetros, usa credenciales fijas
+    public List<TaskResponseDto> getTasks() {
+        String username = "pepe";
+        String password = "12345";
+
         System.out.println("📡 Llamando a API con usuario: " + username);
-        System.out.println("📡 Contraseña: " + password);
         System.out.println("📡 URL: " + apiBaseUrl);
 
         String url = apiBaseUrl + "/task";
