@@ -4,11 +4,14 @@ import com.dwes.todo.category.model.Category;
 import com.dwes.todo.category.services.CategoryService;
 import com.dwes.todo.task.dto.CreateTaskRequest;
 import com.dwes.todo.task.dto.EditTaskRequest;
+import com.dwes.todo.task.dto.TaskResponseDto;
 import com.dwes.todo.task.model.Task;
 import com.dwes.todo.task.service.TaskService;
+import com.dwes.todo.task.service.TodoRestClient;
 import com.dwes.todo.user.model.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -99,5 +102,15 @@ public class TaskController {
     public String deleteTask(@PathVariable Long id) {
         taskService.deleteById(id);
         return "redirect:/";
+    }
+
+    @Autowired
+    private TodoRestClient todoRestClient;
+
+    @GetMapping("/tasks-externas")
+    public String getExternalTasks(@AuthenticationPrincipal User user, Model model) {
+        List<TaskResponseDto> tasks = todoRestClient.getTasks(user.getUsername(), user.getPassword());
+        model.addAttribute("tasks", tasks);
+        return "task-list";
     }
 }
