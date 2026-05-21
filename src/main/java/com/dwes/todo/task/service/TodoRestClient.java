@@ -20,21 +20,37 @@ public class TodoRestClient {
     private String apiBaseUrl;
 
     public List<TaskResponseDto> getTasks(String username, String password) {
+        // Logs para depuración (se verán en los logs de Railway)
+        System.out.println("📡 Llamando a API con usuario: " + username);
+        System.out.println("📡 Contraseña: " + password);
+        System.out.println("📡 URL: " + apiBaseUrl);
+
         String url = apiBaseUrl + "/task";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(username, password);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<List<TaskResponseDto>> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                new ParameterizedTypeReference<List<TaskResponseDto>>() {}
-        );
+        try {
+            ResponseEntity<List<TaskResponseDto>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    new ParameterizedTypeReference<>() {}
+            );
 
-        return response.getBody();
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return response.getBody();
+            } else {
+                System.out.println("❌ Error en la respuesta: " + response.getStatusCode());
+                return List.of();
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Excepción al llamar a la API: " + e.getMessage());
+            return List.of();
+        }
     }
 }
 
