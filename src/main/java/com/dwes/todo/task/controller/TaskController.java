@@ -109,6 +109,9 @@ public class TaskController {
 
     @GetMapping("/tasks-externas")
     public String getExternalTasks(@AuthenticationPrincipal User user, Model model) {
+        System.out.println("👤 Username desde todo-app: " + user.getUsername());
+        System.out.println("🔑 Password desde todo-app: " + user.getPassword());
+
         List<TaskResponseDto> tasks = todoRestClient.getTasks(user.getUsername(), user.getPassword());
         model.addAttribute("tasks", tasks);
         return "task-list";
