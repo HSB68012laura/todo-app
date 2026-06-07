@@ -11,9 +11,12 @@ public class TaskResponseDto {
     private Long id;
     private String title;
     private String description;
-    private boolean completed;
+    private Boolean completed;
     private String priority;
     private String deadline;
     private String createdAt;
-    private String author;
+    private AuthorDto  author;
+    private Long categoryId;
+    private String tags;
+    private String username;
 }

@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.task.model;
 
 import com.dwes.todo.category.model.Category;
@@ -69,3 +70,4 @@ public class Task {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.shared.security;
 
 import com.dwes.todo.user.model.UserRepository;
@@ -21,3 +22,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Bad credentials"));
     }
 }
+*/

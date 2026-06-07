@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.shared.error;
 
 import com.dwes.todo.task.exception.EmptyTaskListException;
@@ -14,3 +15,4 @@ public class GlobalExceptionHandler {
         return "redirect:/";
     }
 }
+*/

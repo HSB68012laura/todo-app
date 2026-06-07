@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.task.exception;
 
 public class EmptyTaskListException extends RuntimeException {
@@ -5,3 +6,4 @@ public class EmptyTaskListException extends RuntimeException {
     super();
   }
 }
+*/

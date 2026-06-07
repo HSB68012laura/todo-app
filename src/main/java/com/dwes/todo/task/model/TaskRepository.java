@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.task.model;
 
 import com.dwes.todo.category.model.Category;
@@ -13,3 +14,4 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByAuthor(User user, Sort sort);
     List<Task> findByCategory(Category category);
 }
+*/

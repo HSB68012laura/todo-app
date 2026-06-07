@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.task.service;
 
 
@@ -39,7 +40,7 @@ public class TaskService {
 
         return result;
     }*/
-
+/*
     private List<Task> findAll(User user) {
 
         List<Task> result = null;
@@ -134,3 +135,4 @@ public class TaskService {
         return tasks;
     }
 }
+*/

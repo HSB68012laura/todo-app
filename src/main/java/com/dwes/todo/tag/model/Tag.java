@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.tag.model;
 
 import jakarta.persistence.Entity;
@@ -39,3 +40,4 @@ public class Tag {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.shared.init;
 
 
@@ -36,7 +37,7 @@ public class DataSeed {
     Solamente devuelve aquellos que son UserRole.USER
     para poder usarlos como autores de Task
      */
-    private List<User> insertUsers() {
+    /*private List<User> insertUsers() {
         List<User> result = new ArrayList<>();
 
         CreatedUserRequest req = CreatedUserRequest.builder()
@@ -87,3 +88,5 @@ public class DataSeed {
 
     }
 }
+*/
+

@@ -1,6 +1,12 @@
 package com.dwes.todo.task.service;
 
+import com.dwes.todo.task.dto.CategoryDto;
+import com.dwes.todo.task.dto.CreateTaskRequest;
 import com.dwes.todo.task.dto.TaskResponseDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -8,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,24 +23,28 @@ public class TodoRestClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${todo.rest.url:https://todo-rest-production-0496.up.railway.app}")
+    //@Value("${todo.rest.url:https://todo-rest-production-0496.up.railway.app}")
+    @Value("${todo.rest.url:http://localhost:8080}")
     private String apiBaseUrl;
 
-    // 👇 Este método ya no recibe parámetros, usa credenciales fijas
-    public List<TaskResponseDto> getTasks() {
-        String username = "pepe";
-        String password = "12345";
+    // Credenciales fijas para pruebas (laura/12345)
+    private final String username = "laura";
+    private final String password = "12345";
 
-        System.out.println("📡 Llamando a API con usuario: " + username);
-        System.out.println("📡 URL: " + apiBaseUrl);
-
-        String url = apiBaseUrl + "/task";
-
+    private HttpHeaders createAuthHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(username, password);
         headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
 
-        HttpEntity<?> entity = new HttpEntity<>(headers);
+    // GET /task - Listar todas las tareas
+    public List<TaskResponseDto> getTasks() {
+        String url = apiBaseUrl + "/task";
+        System.out.println("URL: " + url);
+        System.out.println("Usuario: " + username);
+
+        HttpEntity<?> entity = new HttpEntity<>(createAuthHeaders());
 
         try {
             ResponseEntity<List<TaskResponseDto>> response = restTemplate.exchange(
@@ -42,17 +53,104 @@ public class TodoRestClient {
                     entity,
                     new ParameterizedTypeReference<>() {}
             );
-
-            if (response.getStatusCode() == HttpStatus.OK) {
-                return response.getBody();
-            } else {
-                System.out.println("❌ Error en la respuesta: " + response.getStatusCode());
-                return List.of();
-            }
+            System.out.println("Respuesta código: " + response.getStatusCode());
+            System.out.println("Tareas recibidas: " + (response.getBody() != null ? response.getBody().size() : 0));
+            return response.getBody();
         } catch (Exception e) {
-            System.out.println("❌ Excepción al llamar a la API: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
+    // GET /task/{id} - Obtener una tarea por ID
+    public TaskResponseDto getTaskById(Long id) {
+        String url = apiBaseUrl + "/task/" + id;
+        HttpEntity<?> entity = new HttpEntity<>(createAuthHeaders());
+
+        try {
+            ResponseEntity<TaskResponseDto> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    TaskResponseDto.class
+            );
+            return response.getBody();
+        } catch (Exception e) {
+            System.out.println("Error al obtener tarea " + id + ": " + e.getMessage());
+            return null;
+        }
+    }
+
+    // POST /task - Crear una nueva tarea
+    public TaskResponseDto createTask(CreateTaskRequest request) {
+        String url = apiBaseUrl + "/task";
+
+        // Si el request no tiene priority, asignar "MEDIA" por defecto
+        if (request.getPriority() == null || request.getPriority().isEmpty()) {
+            request.setPriority("MEDIA");
+        }
+
+        HttpEntity<CreateTaskRequest> entity = new HttpEntity<>(request, createAuthHeaders());
+
+        try {
+            ResponseEntity<TaskResponseDto> response = restTemplate.postForEntity(url, entity, TaskResponseDto.class);
+            return response.getBody();
+        } catch (Exception e) {
+            System.out.println("Error al crear tarea: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // PUT /task/{id} - Editar una tarea
+    public TaskResponseDto updateTask(Long id, CreateTaskRequest request) {
+        String url = apiBaseUrl + "/task/" + id;
+        if (request.getDeadline() == null) {
+            request.setDeadline(LocalDateTime.now().plusDays(7));
+        }
+        if (request.getCategoryId() == null || request.getCategoryId() == -1) {
+            request.setCategoryId(null);
+        }
+        HttpEntity<CreateTaskRequest> entity = new HttpEntity<>(request, createAuthHeaders());
+
+        try {
+            restTemplate.put(url, entity);
+            return getTaskById(id);
+        } catch (Exception e) {
+            System.out.println("Error al editar tarea " + id + ": " + e.getMessage());
+            return null;
+        }
+    }
+
+    // DELETE /task/{id} - Eliminar una tarea
+    public boolean deleteTask(Long id) {
+        String url = apiBaseUrl + "/task/" + id;
+        HttpEntity<?> entity = new HttpEntity<>(createAuthHeaders());
+
+        try {
+            restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error al eliminar tarea " + id + ": " + e.getMessage());
+            return false;
+        }
+    }
+
+    public List<CategoryDto> getCategories() {
+        String url = apiBaseUrl + "/categories";
+        HttpEntity<?> entity = new HttpEntity<>(createAuthHeaders());
+
+        try {
+            ResponseEntity<List<CategoryDto>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    new ParameterizedTypeReference<>() {}
+            );
+            return response.getBody();
+        } catch (Exception e) {
+            System.out.println("Error al obtener categorías: " + e.getMessage());
             return List.of();
         }
     }
 }
-

@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.task.exception;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -11,3 +12,4 @@ public class TaskNotFoundException extends EntityNotFoundException {
         super("Task with id " + id + " not found".formatted(id));
     }
 }
+*/

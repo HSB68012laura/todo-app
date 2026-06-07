@@ -60,7 +60,7 @@
         <div class="card rounded-3">
           <div class="card-body p-4">
             <form class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2"
-                  action="#" th:action="@{/task/edit/submit}" method="POST" th:object="${task}">
+                  action="#" th:action="@{/task/{id}/edit(id=${task.id})}" method="POST" th:object="${task}">
               <h3>Edit task</h3>
               <input type="hidden" th:field="*{id}" />
               <div class="col-12">

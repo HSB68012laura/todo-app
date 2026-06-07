@@ -1,3 +1,4 @@
+/*
 package com.dwes.todo.user.model;
 
 import jakarta.persistence.*;
@@ -35,3 +36,4 @@ public class User implements UserDetails {
     }
 
 }
+*/

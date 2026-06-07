@@ -1,4 +1,4 @@
-package com.dwes.todo.category.model;
+/*package com.dwes.todo.category.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,5 +40,5 @@ public class Category {
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
-}
+}*/
 
