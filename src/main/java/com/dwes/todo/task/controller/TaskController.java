@@ -32,6 +32,13 @@ public class TaskController {
 
     private final TodoRestClient todoRestClient;
 
+    //index
+    @GetMapping("/")
+    public String index(Model model) {
+        return "redirect:/login";
+    }
+
+
     // Listar todas las tareas
     @GetMapping
     public String listTasks(Model model) {
