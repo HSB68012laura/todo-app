@@ -31,23 +31,23 @@
                 <form action="https://todo-rest-production-0496.up.railway.app/auth/register" method="post">
                     <div class="mb-3">
                         <label for="inputFullname" class="form-label">Fullname</label>
-                        <input type="text" class="form-control" id="inputFullname" th:field="*{fullname}">
+                        <input type="text" class="form-control" id="inputFullname" name="fullname">
                     </div>
                     <div class="mb-3">
                         <label for="inputUsername" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="inputUsername" th:field="*{username}">
+                        <input type="text" class="form-control" id="inputUsername" name="username">
                     </div>
                     <div class="mb-3">
                         <label for="inputEmail" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="inputEmail" th:field="*{email}">
+                        <input type="email" class="form-control" id="inputEmail" name="email">
                     </div>
                     <div class="mb-3">
                         <label for="inputPassword1" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="inputPassword1" th:field="*{password}">
+                        <input type="password" class="form-control" id="inputPassword1" name="password">
                     </div>
                     <div class="mb-3">
                         <label for="inputPassword2" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="inputPassword2" th:field="*{verifyPassword}">
+                        <input type="password" class="form-control" id="inputPassword2" name="verifyPassword">
                     </div><button type="submit" class="btn btn-primary">Submit</button>
                 </form>
 
