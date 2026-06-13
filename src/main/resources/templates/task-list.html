@@ -66,7 +66,7 @@
           <div class="card-body p-4">
 
            <form class="row row-cols-auto g-3 justify-content-center align-items-center"
-                  action="#" th:action="@{/task/submit}" method="POST" th:object="${newTask}" sec:authorize="hasRole('ROLE_USER')">
+                  action="#" th:action="@{/task/submit}" method="POST" th:object="${newTask}">
               <h3>Create new task</h3>
               <div class="col-12">
                 <div class="form-outline">
@@ -93,14 +93,26 @@
                           th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : 'is-valid'"
                            aria-describedby="validation-categoryid">
                       <option value="-1">---</option>
-                      <option th:each="category : ${categories}"
-                              th:value="${category.id}" th:text="${category.title}">
+                      <option th:each="category : ${categoryList}"
+                              th:value="${category.id}" th:text="${category.name}">
                         Category</option>
                   </select>
                   <div id="validation-categoryid" class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}">
                   </div>
                 </div>
               </div>
+               <div class="col-12">
+                   <label class="form-label">Priority</label>
+                   <select class="form-select" th:field="*{priority}">
+                       <option value="BAJA">Baja</option>
+                       <option value="MEDIA">Media</option>
+                       <option value="ALTA">Alta</option>
+                   </select>
+               </div>
+               <div class="col-12">
+                   <label class="form-label">Deadline</label>
+                   <input type="datetime-local" class="form-control" th:field="*{deadline}">
+               </div>
               <div class="col-12">
                 <label class="form-label" for="task-tags">Tags</label>
                 <input type="text" class="form-control" id="task-tags" th:field="*{tags}" placeholder="tas1, tag2, tag3,..."/>

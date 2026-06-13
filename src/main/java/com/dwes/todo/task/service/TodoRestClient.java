@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,18 +23,26 @@ public class TodoRestClient {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private HttpSession session;
 
-    //@Value("${todo.rest.url:https://todo-rest-production-0496.up.railway.app}")
     @Value("${todo.rest.url:http://localhost:8080}")
     private String apiBaseUrl;
 
-    // Credenciales fijas para pruebas (laura/12345)
-    private final String username = "laura";
-    private final String password = "12345";
+    private String getUsername() {
+        return (String) session.getAttribute("username");
+    }
+    private String getPassword() {
+        return (String) session.getAttribute("password");
+    }
 
     private HttpHeaders createAuthHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(username, password);
+        String username = getUsername();
+        String password = getPassword();
+        if (username != null && password != null) {
+            headers.setBasicAuth(username, password);
+        }
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }
@@ -41,8 +50,6 @@ public class TodoRestClient {
     // GET /task - Listar todas las tareas
     public List<TaskResponseDto> getTasks() {
         String url = apiBaseUrl + "/task";
-        System.out.println("URL: " + url);
-        System.out.println("Usuario: " + username);
 
         HttpEntity<?> entity = new HttpEntity<>(createAuthHeaders());
 
