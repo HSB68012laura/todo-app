@@ -75,8 +75,9 @@ public class UserController {
             redirectAttributes.addFlashAttribute("Error de autenticación", ex.getMessage());
         }
         System.out.println("Login fallido, redirigiendo a /login");
-        return "redirect:/login";
+        return "redirect:/login?error";
     }
+
 
     @GetMapping("/register")
     public String register(Model model) {

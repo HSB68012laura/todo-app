@@ -6,8 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.apache.catalina.webresources.TomcatURLStreamHandlerFactory.disable;
-
 @Configuration
 @EnableWebSecurity
 public class Securityconfig {
@@ -17,6 +15,7 @@ public class Securityconfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/","/login", "/register", "/css/**", "/js/**", "/img/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form.disable())

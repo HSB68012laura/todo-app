@@ -2,6 +2,7 @@ package com.dwes.todo.task.service;
 
 import com.dwes.todo.task.dto.CategoryDto;
 import com.dwes.todo.task.dto.CreateTaskRequest;
+import com.dwes.todo.task.dto.TagDto;
 import com.dwes.todo.task.dto.TaskResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -99,6 +100,9 @@ public class TodoRestClient {
                     entity,
                     TaskResponseDto.class
             );
+            System.out.println("=== DETALLE TAREA ID: " + id + " ===");
+            System.out.println("tagNames recibidos: " + response.getBody().getTagNames());
+
             return response.getBody();
         } catch (Exception e) {
             System.out.println("Error al obtener tarea " + id + ": " + e.getMessage());
@@ -174,6 +178,21 @@ public class TodoRestClient {
             return response.getBody();
         } catch (Exception e) {
             System.out.println("Error al obtener categorías: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    public List<TagDto> getTags() {
+        String url = apiBaseUrl + "/tags";
+        HttpEntity<?> entity = new HttpEntity<>(createAuthHeaders());
+
+        try {
+            ResponseEntity<List<TagDto>> response = restTemplate.exchange(
+                    url, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
+            System.out.println("Tags recibidas: " + (response.getBody() != null ? response.getBody().size() : 0));
+            return response.getBody();
+        } catch (Exception e) {
+            System.out.println("Error al obtener tags: " + e.getMessage());
             return List.of();
         }
     }
