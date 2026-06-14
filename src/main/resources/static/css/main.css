@@ -21,3 +21,18 @@
       div.navbar-options {
         margin-left: 20px;
       }
+
+ #filtros
+ .row {
+     align-items: flex-end;
+ }
+
+ #filtros .form-control,
+ #filtros .form-select {
+     height: 38px;
+ }
+
+ #filtros .btn {
+     height: 38px;
+     white-space: nowrap;
+ }

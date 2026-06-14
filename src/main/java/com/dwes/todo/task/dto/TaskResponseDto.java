@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +19,8 @@ public class TaskResponseDto {
     private String createdAt;
     private AuthorDto  author;
     private Long categoryId;
+    private String categoryName;
+    private List<String> tagNames;
     private String tags;
     private String username;
 }

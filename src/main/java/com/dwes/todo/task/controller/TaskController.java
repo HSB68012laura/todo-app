@@ -1,36 +1,18 @@
 package com.dwes.todo.task.controller;
 
-//import com.dwes.todo.category.model.Category;
-//import com.dwes.todo.category.services.CategoryService;
-//import com.dwes.todo.task.dto.EditTaskRequest;
 import com.dwes.todo.task.dto.CategoryDto;
 import com.dwes.todo.task.dto.CreateTaskRequest;
 import com.dwes.todo.task.dto.TaskResponseDto;
-//import com.dwes.todo.task.model.Task;
-//import com.dwes.todo.task.service.TaskService;
 import com.dwes.todo.task.service.TodoRestClient;
-//import com.dwes.todo.user.model.User;
-//import jakarta.validation.Valid;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-//import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/task")
@@ -53,16 +35,26 @@ public class TaskController {
         List<TaskResponseDto> tasks = todoRestClient.getTasks();
         List<CategoryDto> categories = todoRestClient.getCategories();
 
+        Map<String, Object> dashboard = todoRestClient.getDashboard();
+
         model.addAttribute("taskList", tasks);
         model.addAttribute("categoryList", categories);
+        model.addAttribute("dashboard", dashboard);
         model.addAttribute("newTask", new CreateTaskRequest());
         return "task-list";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String updateTask(@PathVariable Long id, @ModelAttribute("taskRequest") CreateTaskRequest request) {
+        todoRestClient.updateTask(id, request);
+        return "redirect:/task";
     }
 
     // Mostrar formulario para crear nueva tarea
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("newTask", new CreateTaskRequest());
+        model.addAttribute("categoryList", todoRestClient.getCategories());
         return "task-form";
     }
 
@@ -92,6 +84,9 @@ public class TaskController {
         TaskResponseDto task = todoRestClient.getTaskById(id);
         model.addAttribute("task", task);
 
+        List<CategoryDto> categories = todoRestClient.getCategories();
+        model.addAttribute("categoryList", categories);
+
         CreateTaskRequest request = new CreateTaskRequest();
         request.setTitle(task.getTitle());
         request.setDescription(task.getDescription());
@@ -100,20 +95,6 @@ public class TaskController {
         model.addAttribute("taskRequest", request);
 
         return "show-task";
-    }
-
-
-    // Editar tarea
-    @PostMapping("/{id}/edit")
-    public String updateTask(@PathVariable Long id, @ModelAttribute("task") TaskResponseDto updatedTask) {
-        CreateTaskRequest request = new CreateTaskRequest();
-        request.setTitle(updatedTask.getTitle());
-        request.setDescription(updatedTask.getDescription());
-        request.setPriority(updatedTask.getPriority());
-        request.setCategoryId(updatedTask.getCategoryId());
-        request.setCompleted(updatedTask.getCompleted());
-        todoRestClient.updateTask(id, request);
-        return "redirect:/task";
     }
 
     // Cambiar a completado
@@ -143,6 +124,43 @@ public class TaskController {
         todoRestClient.deleteTask(id);
         return "redirect:/task";
     }
+
+    //Buscar tarea
+    @GetMapping("/search")
+    public String searchTasks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String priority,
+            @RequestParam(required = false) String completed,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long tagId,
+            Model model) {
+
+        System.out.println("=== BÚSQUEDA ===");
+        System.out.println("title: " + title);
+        System.out.println("priority: " + priority);
+        System.out.println("categoryId: " + categoryId);
+        System.out.println("completed: " + completed);
+        System.out.println("tagId: " + tagId);
+
+        List<TaskResponseDto> tasks;
+
+        if ("overdue".equals(completed)) {
+            tasks = todoRestClient.getOverdueTasks();
+        } else  {
+            Boolean completedBool = completed != null ? Boolean.parseBoolean(completed) : null;
+            tasks = todoRestClient.searchTasks(title, priority, completedBool, categoryId, tagId);
+        }
+
+        List<CategoryDto> categories = todoRestClient.getCategories();
+        Map<String, Object> dashboard = todoRestClient.getDashboard();
+
+        model.addAttribute("taskList", tasks);
+        model.addAttribute("categoryList", categories);
+        model.addAttribute("dashboard", dashboard);
+        model.addAttribute("newTask", new CreateTaskRequest());
+        return "task-list";
+    }
+
     /*private final TaskService taskService;
     private final CategoryService categoryService;
 

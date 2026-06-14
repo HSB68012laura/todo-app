@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TodoRestClient {
@@ -34,6 +36,21 @@ public class TodoRestClient {
     }
     private String getPassword() {
         return (String) session.getAttribute("password");
+    }
+
+    public Map<String, Object> getDashboard() {
+        String url = apiBaseUrl + "/task/dashboard";
+        HttpEntity<?> entity = new HttpEntity<>(createAuthHeaders());
+
+        try {
+            ResponseEntity<Map<String, Object>> response =restTemplate.exchange(
+                    url, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
+            );
+            return response.getBody();
+        } catch (Exception e) {
+            System.out.println("Error al obtener dashboard: " + e.getMessage());
+            return new HashMap<>();
+        }
     }
 
     private HttpHeaders createAuthHeaders() {
@@ -160,4 +177,40 @@ public class TodoRestClient {
             return List.of();
         }
     }
+
+    public List<TaskResponseDto> searchTasks(String title, String priority, Boolean completed, Long categoryId, Long tagId) {
+        String url = apiBaseUrl + "/task/search?";
+
+        if (title != null && !title.isEmpty()) url += "title=" + title + "&";
+        if (priority != null && !priority.isEmpty()) url += "priority=" + priority + "&";
+        if (completed != null) url += "completed=" + completed + "&";
+        if (categoryId != null) url += "categoryId=" + categoryId + "&";
+        if (tagId != null) url += "tagId=" + tagId + "&";
+
+        HttpEntity<?> entity = new HttpEntity<>(createAuthHeaders());
+
+        try {
+            ResponseEntity<List<TaskResponseDto>> response = restTemplate.exchange(
+                    url, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
+            return response.getBody();
+        } catch (Exception e) {
+            System.out.println("Error en búsqueda: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    public List<TaskResponseDto> getOverdueTasks() {
+        String url = apiBaseUrl + "/task/overdue";
+        HttpEntity<?> entity = new HttpEntity<>(createAuthHeaders());
+
+        try {
+            ResponseEntity<List<TaskResponseDto>> response = restTemplate.exchange(
+                    url, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
+            return response.getBody();
+        } catch (Exception e) {
+            System.out.println("Error obtener tareas vencidas: " + e.getMessage());
+            return List.of();
+        }
+    }
+
 }

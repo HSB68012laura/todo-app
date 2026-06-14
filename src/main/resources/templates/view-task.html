@@ -53,6 +53,17 @@
                         </td>
                     </tr>
                     <tr>
+                        <th>Categoría</th>
+                        <td th:text="${task.categoryName != null ? task.categoryName : 'Sin categoría'}"></td>
+                    </tr>
+                    <tr>
+                        <th>Tags</th>
+                        <td>
+                            <span th:each="tag : ${task.tagNames}" class="badge bg-secondary me-1" th:text="${tag}"></span>
+                            <span th:if="${task.tagNames == null or task.tagNames.empty}">Sin etiquetas</span>
+                        </td>
+                    </tr>
+                    <tr>
                         <th>Fecha creación</th>
                         <td th:text="${task.createdAt}">-</td>
                     </tr>

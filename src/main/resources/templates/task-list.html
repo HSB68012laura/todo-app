@@ -64,68 +64,86 @@
       <div class="col">
         <div class="card rounder-3">
           <div class="card-body p-4">
-
-           <form class="row row-cols-auto g-3 justify-content-center align-items-center"
-                  action="#" th:action="@{/task/submit}" method="POST" th:object="${newTask}">
-              <h3>Create new task</h3>
-              <div class="col-12">
-                <div class="form-outline">
-                  <label class="form-label" for="task-title">Task title</label>
-                  <div class="input-group has-validation">
-                    <input type="text" class="form-control" id="task-title"
-                            th:classappend="${#fields.hasErrors('title')}? 'is-invalid'"
-                            th:field="*{title}" aria-describedby="task-titleHelp" required>
-                    <div id="validation-title" class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
-
+              <div class="row mb-4 justify-content-center" th:if="${dashboard != null}">
+                  <div class="col-md-3">
+                      <div class="card text-white bg-primary">
+                          <div class="card-body text-center">
+                              <h5 class="card-title">Total tareas</h5>
+                              <h2 th:text="${dashboard.totalTasks}">0</h2>
+                          </div>
+                      </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-12">
-                <div class="form-outline">
-                  <label class="form-label" for="task-desc">Description</label>
-                  <textarea class="form-control" id="task-desc" rows="3"placeholder="Optional..." th:field="*{description}"></textarea>
-                </div>
-              </div>
-              <div class="col-12">
-                <label for="category">Category</label>
-                <div class="input-goup has-validation">
-                  <select id="category" th:field="*{categoryId}" class="form-select"
-                          th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : 'is-valid'"
-                           aria-describedby="validation-categoryid">
-                      <option value="-1">---</option>
-                      <option th:each="category : ${categoryList}"
-                              th:value="${category.id}" th:text="${category.name}">
-                        Category</option>
-                  </select>
-                  <div id="validation-categoryid" class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}">
+                  <div class="col-md-3">
+                      <div class="card text-white bg-success">
+                          <div class="card-body text-center">
+                              <h5 class="card-title">Completadas</h5>
+                              <h2 th:text="${dashboard.completedTasks}">0</h2>
+                          </div>
+                      </div>
                   </div>
+                  <div class="col-md-3">
+                      <div class="card text-white bg-danger">
+                          <div class="card-body text-center">
+                              <h5 class="card-title">Vencidas</h5>
+                              <h2 th:text="${dashboard.overdueTasks}">0</h2>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="mb-3">
+                  <a href="/task/new" class="btn btn-primary">Nueva tarea</a>
+                  <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filtros" >
+                      Buscar tareas
+                  </button>
+              </div>
+            <div class="collapse mb-3" id="filtros">
+                <div class="card card-body">
+                    <form class="row g-3" action="#" th:action="@{/task/search}" method="GET">
+                        <div class="col-md-4">
+                            <input type="text" name="title" class="form-control" placeholder="Buscar por título">
+                        </div>
+                        <div class="col-md-4">
+                            <select name="priority" class="form-select">
+                                <option value="">Todas las prioridades</option>
+                                <option value="BAJA">Baja</option>
+                                <option value="MEDIA">Media</option>
+                                <option value="ALTA">Alta</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select name="categoryId" class="form-select">
+                                <option value="">Todas las categorías</option>
+                                <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="completed" class="form-select">
+                                <option value="">Todos los estados</option>
+                                <option value="true">Completadas</option>
+                                <option value="false">Pendientes</option>
+                                <option value="overdue">Vencidas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="tagId" class="form-select">
+                            <option value="">Todas las etiquetas</option>
+                            <option value="1">Urgente</option>
+                            <option value="2">Importante</option>
+                            <option value="3">Ocio</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                        </div>
+                    </form>
                 </div>
-              </div>
-               <div class="col-12">
-                   <label class="form-label">Priority</label>
-                   <select class="form-select" th:field="*{priority}">
-                       <option value="BAJA">Baja</option>
-                       <option value="MEDIA">Media</option>
-                       <option value="ALTA">Alta</option>
-                   </select>
-               </div>
-               <div class="col-12">
-                   <label class="form-label">Deadline</label>
-                   <input type="datetime-local" class="form-control" th:field="*{deadline}">
-               </div>
-              <div class="col-12">
-                <label class="form-label" for="task-tags">Tags</label>
-                <input type="text" class="form-control" id="task-tags" th:field="*{tags}" placeholder="tas1, tag2, tag3,..."/>
-              </div>
+            </div>
 
-              <div class="col-12" style="...">
-                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary">Create</button>
-              </div>
-            </form>
+
 
 
           <div class="container" style="..." th:if="${param.emptyListError != null}">
-            <h1 class="text-center" sec:authorize="hasRole('ROLE_USER')">Create your first task...</h1>
+            <h1 class="text-center" sec:authorize="hasRole('ROLE_USER')">Crea tu primera tarea...</h1>
             <img src="../static/img/empty-list.jpg" th:src="@{/img/empty-list.jpg}"
                  width="100%"/>
           </div>
@@ -135,9 +153,9 @@
             <thead>
             <tr>
               <th scope="col">Id.</th>
-              <th scope="col">Title</th>
-              <th scope="col">Description</th>
-              <th scope="col">Actions</th>
+              <th scope="col">Título</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Acciones</th>
             </tr>
             </thead>
             <tbody>
@@ -146,12 +164,12 @@
               <td th:text="${task.title}">Buy groceries for next week</td>
               <td th:text="${#strings.abbreviate(task.description, 50)}">Loren ipsum dolor sit amet</td>
               <td>
-                  <a href="#" th:href="@{/task/{id}(id=${task.id})}" class="btn btn-primary">View</a>
-                  <a class="btn btn-danger" th:onclick="|deleteTask(${task.id})|">Delete</a>
+                  <a href="#" th:href="@{/task/{id}(id=${task.id})}" class="btn btn-primary">Ver</a>
+                  <a class="btn btn-danger" th:onclick="|deleteTask(${task.id})|">Borrar</a>
                   <form style="display:none" th:action="@{/task/{id}/del(id=${task.id})}" method="post" th:id="${'delete-task-'+task.id}"></form>
                   <a href="#" th:href="@{/task/{id}/toggle(id=${task.id})}" class="btn ms-1"
                      th:classappend="${task.completed} ? 'btn-ligt' : 'btn-dark'"
-                     th:text="${task.completed} ? 'Disable' : 'Complete'">Complete</a>
+                     th:text="${task.completed} ? 'Completada' : 'Completar'">Completar</a>
               </td>
             </tr>
             </tbody>

@@ -61,11 +61,11 @@
           <div class="card-body p-4">
             <form class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2"
                   action="#" th:action="@{/task/{id}/edit(id=${task.id})}" method="POST" th:object="${task}">
-              <h3>Edit task</h3>
+              <h3>Editar Tarea</h3>
               <input type="hidden" th:field="*{id}" />
               <div class="col-12">
                 <div class="form-outline">
-                  <label class="form-label" for="task-title">Task title</label>
+                  <label class="form-label" for="task-title">Título</label>
                   <div class="input-group has-validation">
                     <input type="text" id="task-title" class="form-control"
                            th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : 'is-valid'"
@@ -77,19 +77,19 @@
                 </div>
                 <div class="col-12">
                   <div class="form-outline">
-                    <label class="form-label" for="task-desc">Description</label>
+                    <label class="form-label" for="task-desc">Descripción</label>
                     <textarea class="form-control" id="task-desc" rows="3" placeholder="Optional..." th:field="*{description}"></textarea>
                   </div>
                 </div>
                 <div class="col-12">
-                  <label for="category">Category</label>
+                  <label for="category">Categoría</label>
                   <div class="input-group has-validation">
                     <select id="category" th:field="*{categoryId}" class="form-select"
                             th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : 'is-valid'"
                             aria-describedby="validation-categoryid">
                       <option value="-1">---</option>
-                      <option th:each="category : ${categories}"
-                              th:value="${category.id}" th:text="${category.title}">
+                      <option th:each="category : ${categoryList}"
+                              th:value="${category.id}" th:text="${category.name}">
                         Category</option>
                     </select>
                     <div id="validation-categoryid" class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}">
@@ -97,13 +97,25 @@
                   </div>
                 </div>
                 <div class="col-12">
+                  <label class="form-label">Prioridad</label>
+                  <select th:field="*{priority}" class="form-select">
+                    <option value="BAJA">Baja</option>
+                    <option value="MEDIA">Media</option>
+                    <option value="ALTA">Alta</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Fecha límite</label>
+                  <input type="datetime-local" class="form-control" th:field="*{deadline}">
+                </div>
+                <div class="col-12">
                   <label class="form-label" for="task-tags">Tags</label>
                   <input type="text" id="task-tags" class="form-control" th:field="*{tags}" placeholder="tag1, tag2, tag3, ..."/>
                 </div>
                 <div class="row">
                   <div class="col">
-                    <label class="form-label" for="task-owner">Owner</label>
-                    <input type="text" id="task-owner" class="form-control" th:field="*{username}" disabled="disabled" readonly="readonly" />
+                    <label class="form-label" for="task-owner">Autor</label>
+                    <input type="text" id="task-owner" class="form-control" th:field="*{author.username}" disabled="disabled" readonly="readonly" />
                   </div>
                   <div class="col">
                     <label class="form-label" for="task-createdAt">Created At</label>
@@ -115,13 +127,13 @@
                 <input class="form-check-input" type="checkbox" value="" id="task-completed"
                        th:field="*{completed}">
                 <label class="form-check-label" for="task-completed">
-                  Completed
+                  Completado
                 </label>
               </div>
 
               <div class="col-12">
-                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary">Edit</button>
-                <a href="#" th:href="@{/}" class="btn btn-light float-end">Back</a>
+                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary">Editar</button>
+                <a href="#" th:href="@{/task}" class="btn btn-light float-end">Atrás</a>
               </div>
             </form>
 
